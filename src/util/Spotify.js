@@ -4,7 +4,6 @@ let accessToken = '';
 
 
 const Spotify = {
-	
 	getAccessToken(){
 		if(accessToken !== ''){
 			return accessToken;
@@ -39,9 +38,10 @@ const Spotify = {
 				  headers: {Authorization: `Bearer ${accessToken}`}
 				}
 				).then(response=>{
-					
+					if(response.ok){
 						return response.json();
-					}
+					} throw new Error('Woops Request failed!');}, 
+					networkError => console.log(networkError.message)
 				).then(json=>{
 					console.log(json);
 					if (!json.tracks) {
