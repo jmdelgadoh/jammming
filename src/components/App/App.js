@@ -47,7 +47,7 @@ class App extends React.Component {
     const trackURIs = this.state.playlistTracks.map(track => track.uri);
     // let data = trackURIs.json();
     console.log(trackURIs);
-    Spotify.savePlaylist('WeWoo',trackURIs);
+    Spotify.savePlaylist(this.state.playlistName,trackURIs);
   }
 
   search(term){

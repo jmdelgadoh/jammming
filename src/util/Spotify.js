@@ -1,5 +1,5 @@
 const clientID = '097b98d45ae04d7dbf5117d81409e256';
-const redirectURI = 'http://localhost:3000/';
+const redirectURI = 'http://xunuxjammm.surge.sh';
 let accessToken = '';
 
 
@@ -106,7 +106,8 @@ const Spotify = {
 							} throw new Error('holy moly couldnt post the tracks');
 						},networkError=>(console.log(networkError.message))
 						).then(jsonResponse => {
-							console.log(jsonResponse);
+							// console.log(jsonResponse);
+							alert('you saved your playlist!');
 						});
 				});
 		});
