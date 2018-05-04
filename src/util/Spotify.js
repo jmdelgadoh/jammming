@@ -1,5 +1,6 @@
 const clientID = '097b98d45ae04d7dbf5117d81409e256';
-const redirectURI = 'http://xunuxjammm.surge.sh';
+// const redirectURI = 'http://xunuxjammm.surge.sh';
+const redirectURI = 'http://localhost:3000/';
 let accessToken = '';
 
 
@@ -43,7 +44,7 @@ const Spotify = {
 					} throw new Error('Woops Request failed!');}, 
 					networkError => console.log(networkError.message)
 				).then(json=>{
-					// console.log(json);
+					
 					if (!json.tracks) {
 						return [];
 					}
@@ -55,7 +56,7 @@ const Spotify = {
 							album: track.album.name,
 							uri: track.uri
  						}));
-					// console.log(theSearch);
+					
 					return theSearch;
 				});
 	},
@@ -74,7 +75,7 @@ const Spotify = {
 			throw new Error('Woops there was a fetch error!');
 			},networkError => {console.log(networkError.message)})
 		.then(data => {
-			console.log(data);
+			// console.log(data);
 			userID=data.id;
 		
 			return fetch(`${baseUrl}/users/${userID}/playlists`,

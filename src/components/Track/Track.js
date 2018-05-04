@@ -10,12 +10,12 @@ class Track extends React.Component {
 		this.removeTrack = this.removeTrack.bind(this);
 	}
 	renderAction(){
-		// if(this.props.isRemoval === 'true'){
-		// 	return '-';
-		// } else {
-		// 	return '+';
-		// }
-		return '+';
+		if(this.props.isRemoval === 'true'){
+			return '-';
+		} else {
+			return '+';
+		}
+		
 	}
 
 	addTrack(){
