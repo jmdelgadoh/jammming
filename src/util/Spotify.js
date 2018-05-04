@@ -22,7 +22,7 @@ const Spotify = {
 			return accessToken;
 
 		} else {
-			const accessUrl = `https://accounts.spotify.com/authorize?client_id=${clientID}&response_type=token&scope=playlist-modify-public&redirect_uri=${redirectURI}`
+			const accessUrl = `https://accounts.spotify.com/authorize?client_id=${clientID}&response_type=token&scope=playlist-modify-private,playlist-modify-public&redirect_uri=${redirectURI}`
 			window.location=accessUrl;
 
 		}
@@ -30,7 +30,7 @@ const Spotify = {
 	},
 
 	search(term){
-
+		accessToken = this.getAccessToken();
 		const endpoint = `https://api.spotify.com/v1/search?type=track&q=${term}`
 		return fetch(
 				endpoint,
@@ -43,7 +43,7 @@ const Spotify = {
 					} throw new Error('Woops Request failed!');}, 
 					networkError => console.log(networkError.message)
 				).then(json=>{
-					console.log(json);
+					// console.log(json);
 					if (!json.tracks) {
 						return [];
 					}
@@ -55,9 +55,61 @@ const Spotify = {
 							album: track.album.name,
 							uri: track.uri
  						}));
-
+					// console.log(theSearch);
 					return theSearch;
 				});
-	}	
+	},
+
+	savePlaylist(playlistName,playlistTracks){
+		const userToken = this.getAccessToken();
+		const headers =  {"Authorization": `Bearer ${userToken}`}
+		let userID = '';
+		console.log(playlistName,playlistTracks);
+		const baseUrl='https://api.spotify.com/v1';
+		
+		return fetch(baseUrl+'/me',{headers : headers}).then(response =>{
+			if(response.ok){
+				return response.json();
+			}
+			throw new Error('Woops there was a fetch error!');
+			},networkError => {console.log(networkError.message)})
+		.then(data => {
+			console.log(data);
+			userID=data.id;
+		
+			return fetch(`${baseUrl}/users/${userID}/playlists`,
+				{
+					method: 'POST',
+					headers: headers,
+					body: JSON.stringify({
+							name: playlistName,
+							description: 'New description',
+							public: false
+						})
+				}).then(response => {						
+						return response.json();
+						 // throw new Error('oink');
+					}, networkError => console.log(networkError.message)
+				).then(jsonResponse => {
+					let playlistId = jsonResponse.id;
+					return fetch(baseUrl+`/users/${userID}/playlists/${playlistId}/tracks`,
+						{
+							method:'POST',
+							headers: {
+								"Authorization": `Bearer ${userToken}`,
+								'Content-Type': 'application/json'
+							},
+							body: JSON.stringify({uris:playlistTracks})
+						}).then(response => {
+							if(response.ok){
+							return response.json();
+							} throw new Error('holy moly couldnt post the tracks');
+						},networkError=>(console.log(networkError.message))
+						).then(jsonResponse => {
+							console.log(jsonResponse);
+						});
+				});
+		});
+	}
 }
 export default Spotify;
